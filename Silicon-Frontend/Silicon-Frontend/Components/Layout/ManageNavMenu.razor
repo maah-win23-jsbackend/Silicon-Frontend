@@ -1,0 +1,27 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Silicon_Frontend.Data
+
+@inject SignInManager<ApplicationUser> SignInManager
+
+
+
+<ul>
+    <li class="nav-item">
+        <NavLink class="nav-link" href="/profile" Match="NavLinkMatch.All">Account</NavLink>
+    </li>
+    <li class="nav-item">
+        <NavLink class="nav-link" href="/notification" Match="NavLinkMatch.All">Notification</NavLink>
+    </li>
+    <li class="nav-item">
+        <NavLink class="nav-link" href="/signout" Match="NavLinkMatch.All">Sign out</NavLink>
+    </li>
+</ul>
+
+@code {
+    private bool hasExternalLogins;
+
+    protected override async Task OnInitializedAsync()
+    {
+        hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+    }
+}
