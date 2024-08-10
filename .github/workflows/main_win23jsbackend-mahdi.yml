@@ -53,4 +53,4 @@ jobs:
           app-name: 'win23jsbackend-mahdi'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_CA67977B52F147BF8A3729454183AE16 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A0A2F6B2EEBA4201B39E2DB3AF946191 }}
