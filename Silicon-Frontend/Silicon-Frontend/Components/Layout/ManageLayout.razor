@@ -1,22 +1,91 @@
 ﻿@inherits LayoutComponentBase
 @layout AccountLayout
 
+@using System.ComponentModel.DataAnnotations
+
+
 
 <section class="account-details">
     <div class="container">
 
         <aside>
-            <Silicon_Frontend.Components.Sections.AccountProfileAvatar/>
+            <Silicon_Frontend.Components.Sections.AccountProfileAvatar user="user"/>
             <ManageNavMenu />
         </aside>
 
         <div class="content">
-            @Body
+           @*  @Body *@
+
+            <h3>Profile</h3>
+
+
+            <div class="row">
+                <div class="col-md-6">
+                    <EditForm Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" method="post">
+                        <DataAnnotationsValidator />
+
+                        <ValidationSummary class="text-danger" role="alert" />
+
+                        <div class="form-floating mb-3">
+                            <input type="text" value="@username" class="form-control" placeholder="Please choose your username." disabled />
+                            <label for="username" class="form-label">Username</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <InputText @bind-Value="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number." />
+                            <label for="phone-number" class="form-label">Phone number</label>
+                            <ValidationMessage For="() => Input.PhoneNumber" class="text-danger" />
+                        </div>
+                        <button type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+                    </EditForm>
+
+                </div>
+            </div>
+        
         </div> 
 
     </div>
 </section>
 
+@code{
+
+    [CascadingParameter]
+    private ApplicationUser user { get; set; } = default!;
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUserDataAsync();
+    }
+
+    private async Task LoadUserDataAsync()
+    {
+        user = await UserManager.GetUserAsync(HttpContext.User) ?? null!;
+    }
+
+    private string? username;
+    private string? phoneNumber;
+
+
+
+    [SupplyParameterFromForm]
+    private InputModel Input { get; set; } = new();
+
+
+    private async Task OnValidSubmitAsync()
+    {
+        await SignInManager.RefreshSignInAsync(user);
+    }
+
+    private sealed class InputModel
+    {
+        [Phone]
+        [Display(Name = "Phone number")]
+        public string? PhoneNumber { get; set; }
+    }
+
+}
 
 
 

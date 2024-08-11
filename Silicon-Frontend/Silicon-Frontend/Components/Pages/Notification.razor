@@ -1,0 +1,67 @@
+﻿@page "/notification"
+@using System.ComponentModel.DataAnnotations
+
+<section class="account-details">
+    <div class="container">
+
+        <aside>
+            <Silicon_Frontend.Components.Sections.AccountProfileAvatar user="user"/>
+            <Silicon_Frontend.Components.Layout.ManageNavMenu />
+        </aside>
+     
+
+        <div class="notification">
+            <h1>Notifications</h1>
+
+            <div id="form-email" class="input-group">
+                <label>Preferred email for notifications</label>
+                <InputText type="email" @bind-Value="Input.Email" class="form-control" autocomplete="email" aria-required="true" placeholder="example@gmail.com" />
+            </div>
+
+            <div id="theme-switch" class="btn-switch">
+                <label>
+                    <input type="checkbox" id="switch-mode" />
+                    <span class="slider round"></span>
+                </label>
+                <label>Subscribe to Newsletter</label>
+
+                <label>
+                    <input type="checkbox" id="switch-mode" />
+                    <span class="slider round"></span>
+                </label>
+                <label>Use Dark Mode Theme in Application</label>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+
+    [CascadingParameter]
+    private ApplicationUser user { get; set; } = default!;
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUserDataAsync();
+    }
+
+    private async Task LoadUserDataAsync()
+    {
+        user = await UserManager.GetUserAsync(HttpContext.User) ?? null!;
+    }
+
+
+
+    [SupplyParameterFromForm]
+    private InputModel Input { get; set; } = new();
+
+    private sealed class InputModel
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; } = "";
+    }
+}
